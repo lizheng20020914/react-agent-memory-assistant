@@ -1,6 +1,6 @@
 # 基于 Agent 的私人 AI 助理
 
-一个面向学习与演示的私人 AI 助理项目。项目基于 **FastAPI、Gradio 和 LangChain ReAct Agent**，集成了工具调用、知识库 RAG、会话记忆、长期记忆、文件问答和 Python 代码执行等能力。
+一个私人 AI 助理项目。项目基于 **FastAPI、Gradio 和 LangChain ReAct Agent**，集成了工具调用、知识库 RAG、会话记忆、长期记忆、文件问答和 Python 代码执行等能力。
 
 ## Demo
 ![项目功能演示](personal_agent1.gif)
@@ -96,7 +96,6 @@ memory/long_term memory/   长期记忆
 db_server/data/            SQLite 数据库
 ```
 
-这些目录通常包含用户数据，不应提交到公开仓库。
 
 ## 环境要求
 
@@ -283,6 +282,35 @@ FAISS 语义检索 + BM25 关键词检索
 | POST | `/knowledgebase/delete_docs` | 删除知识库文档 |
 | POST | `/knowledgebase/search_kb` | 混合检索知识库 |
 
+## Agent 工具
+
+项目为 ReAct Agent 注册了以下工具，Agent 会根据用户问题自主判断是否调用：
+
+| 工具 | 功能 | 使用示例 |
+|---|---|---|
+| `weather check` | 查询指定城市的实时天气和温度 | “墨尔本今天天气怎么样？” |
+| `web search` | 通过网络搜索获取最新信息、新闻和网页摘要 | “最近有哪些 AI 新闻？” |
+| `knowledge search` | 检索本地知识库中的相关文档 | “在 Python 知识库中查询装饰器的作用” |
+| `get time` | 获取服务器当前日期和时间 | “现在几点？” |
+| `code interpreter` | 执行 Python 代码，可用于计算、数据分析和生成图表 | “分析这个 CSV 并画一张折线图” |
+| `save memory` | 保存有长期价值的用户信息、技术偏好、项目资料和重要纠正 | “请记住我更喜欢使用 FastAPI” |
+
+这些工具统一注册在 `tools/tools_select.py` 中。Agent 使用 ReAct 流程完成工具调用：
+
+```text
+分析用户问题
+    ↓
+判断是否需要工具
+    ↓
+选择工具并生成输入
+    ↓
+执行工具
+    ↓
+读取工具返回结果
+    ↓
+生成最终回答
+
+
 ## 数据存储
 
 | 数据 | 存储位置 |
@@ -296,19 +324,7 @@ FAISS 语义检索 + BM25 关键词检索
 | 聊天附件 | `temp/data/<session_id>/` |
 | 生成图片 | `temp/medias/` |
 
-## 安全提示
 
-公开仓库中不要提交：
-
-- API Key 和 `.env`
-- SQLite 数据库
-- FAISS 索引
-- 用户上传文件
-- 聊天历史和摘要
-- 长期记忆
-- 临时生成的图片
-
-本项目目前没有用户认证和多用户数据隔离，仅适合本地学习或可信环境。部署到公网前需要补充认证、权限控制、文件名校验、上传大小限制和并发隔离。
 
 ## 已知限制
 
@@ -316,4 +332,3 @@ FAISS 语义检索 + BM25 关键词检索
 - 历史会话下拉列表在 Gradio 进程启动时读取，新增会话需要重启前端后显示；
 - 聊天附件会直接放入模型上下文，不适合超大文件；
 - 远程和本地 Embedding 生成的知识库不应混用；
-- 本项目以教学展示为主，尚未提供完整生产级异常处理。
