@@ -2,7 +2,9 @@
 
 一个面向学习与演示的私人 AI 助理项目。项目基于 **FastAPI、Gradio 和 LangChain ReAct Agent**，集成了工具调用、知识库 RAG、会话记忆、长期记忆、文件问答和 Python 代码执行等能力。
 
-> 本项目是课程示例，不建议未经安全加固直接部署到公网。
+## Demo
+
+▶️ [观看完整项目演示视频](https://github.com/lizheng20020914/react-agent-memory-assistant/releases/download/demo-v1.0/agent_test.mp4)
 
 ## 功能特性
 
